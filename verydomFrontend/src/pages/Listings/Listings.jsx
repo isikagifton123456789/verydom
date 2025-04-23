@@ -1,14 +1,16 @@
 import { Box } from '@mui/material'
 import React from 'react'
 import SearchBar from '../../components/ListingComponents/SearchBar'
+import Properties from '../../components/ListingComponents/Properties'
 
 const Listings = () => {
   return (
     <Box sx={{
-      height:"100vh",
-      width:"100vw",
+      minHeight:"100vh",
+      overflow:"hidden"
     }}>
       <SearchBar />
+      <Properties />      
     </Box>
   )
 }
