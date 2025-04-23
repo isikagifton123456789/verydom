@@ -1,5 +1,5 @@
 import React from 'react'
-import {MenuItem, Paper,Box, TextField, Typography,Button, Grid, Card, CardContent} from "@mui/material"
+import {MenuItem, Paper,Box, TextField, Typography,Button, Grid, Card, CardContent, Modal} from "@mui/material"
 import { useState } from 'react'
 import { FaMap } from "react-icons/fa";
 import { FaBed } from "react-icons/fa";
@@ -9,6 +9,16 @@ import Image from "../../assets/images/hero-img.jpg"
 
 const Properties = () => {
     const [filter, setFilter] = useState("value 1")
+    const [open, setOpen] = useState(false);
+    const [selectedProperty, setSelectedProperty] = useState(null);
+    
+    const handleOpen = (item) => {
+        setSelectedProperty(item);
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
     const property=[
         {
             
@@ -16,7 +26,7 @@ const Properties = () => {
             location: "Portland, OR",
             bedrooms: 3,
             bathrooms: 2,
-            sqft: 1500,
+            area: 1500,
             price: "$3,200/mo",
             image:Image,
             forSale: "For Sale",
@@ -30,7 +40,7 @@ const Properties = () => {
             location: "Miami, FL",
             bedrooms: 4,
             bathrooms: 3,
-            sqft: 2200,
+            area: 2200,
             price: "$5,000/mo",
             image:Image,
             forSale: "For Rent",
@@ -44,7 +54,7 @@ const Properties = () => {
             location: "Charleston, SC",
             bedrooms: 3,
             bathrooms: 2.5,
-            sqft: 1800,
+            area: 1800,
             price: "$3,800/mo",
             image:Image,
             forSale: "For Rent",
@@ -58,7 +68,7 @@ const Properties = () => {
             location: "Seattle, WA",
             bedrooms: 1,
             bathrooms: 1,
-            sqft: 800,
+            area: 800,
             price: "$2,000/mo",
             image:Image,
             forSale: "For Sale",
@@ -72,27 +82,15 @@ const Properties = () => {
             location: "Denver, CO",
             bedrooms: 5,
             bathrooms: 4,
-            sqft: 3000,
+            area: 3000,
             price: "$4,500/mo",
             image:Image,
             forSale: "For Sale",
             verified: "Verified",
             type: "House",
             rating: "★ 4.9",
-          },
-          {
-            title: 'Cozy Suburban Cottage',
-            location: 'Portland, OR',
-            bedrooms: 3,
-            bathrooms: 2,
-            sqft: 1500,
-            price: '$3,200/mo',
-            image: Image, 
-            forSale: 'For Sale',
-            verified: 'Verified',
-            type: 'House',
-            rating: '★ 4.5',
-          },
+          }
+    
         
     ]
     const count = property.length
@@ -119,7 +117,7 @@ const Properties = () => {
             </Box>
             <Box border={3}></Box>
           
-    <Box sx={{mt:3, display:"grid",gridTemplateColumns:{xs:"repeat(1, 1fr)",md:"repeat(2, 1fr)"}, gap:4}}>
+    <Box sx={{mt:3, display:"grid",gridTemplateColumns:{xs:"repeat(1, 1fr)",md:"repeat(2, 1fr)"}, gap:2}}>
     {
         property && property.map((item)=>(
             <Card
@@ -284,7 +282,7 @@ const Properties = () => {
                   </Grid>
                   <Grid item sx={{display:"flex", gap:1}}>
                     <Typography variant="body2" sx={{ fontWeight: 500, color: '#333' }}>
-                      {item.sqft}
+                      {item.area}
                     </Typography>
                     <Typography variant='body2' sx={{ fontWeight: 500, color: '#333'}}>
                         sqft
@@ -308,6 +306,8 @@ const Properties = () => {
                   <Grid item>
                     <Button
                       variant="contained"
+                      onClick={() => handleOpen(item)}
+                      type="button"
                       sx={{
                         backgroundColor: '#3b82f6',
                         color: '#fff',
@@ -332,7 +332,196 @@ const Properties = () => {
     }  
     
     </Box>
+    <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{zIndex:1300}}
+      >
+
+        <Card
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: { xs: '90%', sm: 600 },
+            maxHeight: '80vh',
+            overflowY: 'auto',
+            bgcolor: '#fff',
+            borderRadius: 3,
+            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.2)',
+            p: 4,
+            outline: 'none',
+          }}
+        >
+          {selectedProperty ? (
+            <>
+              <Typography variant="h4" fontWeight={700} sx={{ mb: 2, color: '#1a1a1a' }} id="property-details-modal">
+                {selectedProperty.title}
+              </Typography>
+              <Box
+                component="img"
+                sx={{
+                  width: '100%',
+                  maxWidth: 600,
+                  height: 300,
+                  objectFit: 'cover',
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+                src={selectedProperty.image}
+                alt={selectedProperty.title}
+                onError={() => console.error('Popup image failed to load:', selectedProperty.image)}
+              />
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Location
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.location}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Price
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.price}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Bedrooms
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.bedrooms} bd
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Bathrooms
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.bathrooms} ba
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Size
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.area} sqft
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm= {6}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Type
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.type}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Status
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.forSale}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Verified
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.verified || 'Not Verified'}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Rating
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.rating}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h6" fontWeight={500} sx={{ mb: 1 }}>
+                    Description
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: '#666' }}>
+                    {selectedProperty.description}
+                  </Typography>
+                </Grid>
+              </Grid>
+             <Grid container sx={{display:'flex', flexDirection:"row", justifyContent:"space-between"}}>
+                <Grid item xs={12} sm={6}>
+                <Button
+                variant="outlined"
+                onClick={handleClose}
+                sx={{
+                  mt: 3,
+                  borderColor: '#3b82f6',
+                  color: '#3b82f6',
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  '&:hover': {
+                    borderColor: '#2563eb',
+                    color: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.04)',
+                  },
+                }}
+                
+              >
+                Close
+              </Button>
+
+                </Grid>
+            <Grid item xs={12} sm={6}sx={{display:'flex', flexDirection:"row", gap:2}}>
+                 <Button
+                       variant="outlined"                
+                       sx={{
+                         mt: 3,
+                         
+                         textTransform: 'none',
+                         fontWeight: 500,                         
+                       }}
+                 >
+                    Send Interest
+                </Button>   
+                <Button
+                variant="contained"                
+                sx={{
+                  mt: 3,
+                  backgroundColor: '#3b82f6',
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  '&:hover': {
+                    backgroundColor: '#2563eb',
+                  },
+                }}
+                
+              >
+                Pay to Contact
+              </Button>
+
+                </Grid>
+              </Grid>
+            </>
+          ) : (
+            <Typography variant="h6" color="error">
+              No property selected
+            </Typography>
+          )}
+        </Card>
+
+
+      </Modal>
     </Paper>
+    
   )
 }
 
